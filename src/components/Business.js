@@ -35,11 +35,7 @@ const Business = () => {
     }
   };
 
-  const handleLinkClick = (business_name) => {
-    console.log(`${business_name} was clicked`);
-    setSelectedBusiness(business_name);
-  };
-
+  
   return (
     <>
       {businesses.length === 0 ? (
@@ -49,7 +45,7 @@ const Business = () => {
       ) : (
         <ul>
           {businesses.map((business)=>{
-            return <li><Link className="btn btn-primary" to={`/businesses/detail/${business.id}`}>Business detail</Link></li>
+            return <li key={business.id}><Link className="btn btn-primary" to={`/businesses/detail/${business.id}`}>Business detail</Link></li>
           })}
         </ul>
 

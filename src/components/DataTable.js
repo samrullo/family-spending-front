@@ -5,7 +5,7 @@ import { useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 
-const DataTable = ({ data }) => {
+const DataTable = ({ data,onRowClick }) => {
   const [rowData, setRowData] = useState(data);
 
   useEffect(() => {
@@ -48,6 +48,7 @@ const DataTable = ({ data }) => {
           columnDefs={columnDefs}
           rowData={rowData}
           onFilterChanged={handleFilterChange}
+          onRowClicked={onRowClick}
         ></AgGridReact>
       </div>
     </div>
