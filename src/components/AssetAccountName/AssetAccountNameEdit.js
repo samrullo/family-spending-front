@@ -57,10 +57,39 @@ const AssetAccountNameEdit = () => {
     e.preventDefault();
     await editAssetAccountName(newAssetAccountName, newAssetAccountDescription);
   };
+
+  const deleteAssetAccountName = async () => {
+    try {
+      const response = await axios.delete(
+        `${API_BASE_URL}${ASSET_ACCOUNT_NAMES_ENDPOINT}${assetAccountNameId}`,
+        { headers: { Authorization: `Token ${localStorage.getItem("token")}` } }
+      );
+      console.log(
+        ` successfully deleted ${assetAccountNameId} ${response.data}`
+      );
+      navigate(`/asset_account_names/${businessId}`, {
+        replace: true,
+        state: { timestamp: new Date().getTime() },
+      });
+    } catch (error) {
+      console.log(`Error when deleting asset account name ${error}`);
+    }
+  };
+
+  const handleDeleteAssetAccountName = () => {
+    deleteAssetAccountName()
+  };
+  
   return (
     <>
       <div>
         <p>Edit Asset Account Name with id {assetAccountNameId}</p>
+        <button
+          className="btn btn-danger"
+          onClick={handleDeleteAssetAccountName}
+        >
+          Delete
+        </button>
         <form className="form" onSubmit={handleNewAssetAccountName}>
           <div className="form-group">
             <label>Name</label>
@@ -83,7 +112,7 @@ const AssetAccountNameEdit = () => {
             />
           </div>
           <div className="form-group">
-            <button className="btn btn-dark mt-3">Submit</button>
+            <button className="btn btn-dark mt-3">Edit</button>
           </div>
         </form>
       </div>

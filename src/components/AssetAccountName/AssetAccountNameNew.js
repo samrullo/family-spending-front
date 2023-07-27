@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { API_BASE_URL, ASSET_ACCOUNT_NAMES_ENDPOINT } from "../apiConfig";
 
-const AssetAccountNew = () => {
+const AssetAccountNameNew = () => {
   const navigate = useNavigate();
   const { businessId } = useParams();
   const [newAssetAccountName, setNewAssetAccountName] = useState("");
@@ -69,4 +69,4 @@ const AssetAccountNew = () => {
   );
 };
 
-export default AssetAccountNew;
+export default AssetAccountNameNew;

@@ -5,10 +5,10 @@ import Dashboard from "./Dashboard";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 import Business from "./Business";
-import AssetAccountName from "./AssetAccount/AssetAccountName";
-import AssetAccountNew from "./AssetAccount/AssetAccountNew";
+import AssetAccountName from "./AssetAccountName/AssetAccountName";
+import AssetAccountNameNew from "./AssetAccountName/AssetAccountNameNew";
 import BusinessDetail from "./BusinessDetail";
-import AssetAccountNameEdit from "./AssetAccount/AssetAccountNameEdit";
+import AssetAccountNameEdit from "./AssetAccountName/AssetAccountNameEdit";
 
 function AppRoutes() {
   return (
@@ -26,7 +26,7 @@ function AppRoutes() {
           path="/asset_account_names/:businessId"
           element={<AssetAccountName />}
         >
-          <Route path="new" element={<AssetAccountNew />} />
+          <Route path="new" element={<AssetAccountNameNew />} />
           <Route
             path="edit/:assetAccountNameId"
             element={<AssetAccountNameEdit />}
