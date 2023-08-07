@@ -1,7 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { API_BASE_URL, ASSET_ACCOUNT_NAMES_ENDPOINT } from "../apiConfig";
+import { API_BASE_URL, ASSET_ACCOUNT_NAMES_ENDPOINT } from "../APIUtils/ApiEndpoints";
+import GenericNewData from "../GenericDataComponents/GenericNewData";
+import { createResource } from "../APIUtils/create_data";
 
 const AssetAccountNameNew = () => {
   const navigate = useNavigate();
@@ -35,37 +37,28 @@ const AssetAccountNameNew = () => {
       newAssetAccountDescription
     );
   };
+
+  const formFields = [
+    {
+      fieldType: "text",
+      fieldLabel: "Name",
+      fieldValue: newAssetAccountName,
+      setFieldValue: setNewAssetAccountName,
+    },
+    {
+      fieldType: "text",
+      fieldLabel: "Description",
+      fieldValue: newAssetAccountDescription,
+      setFieldValue: setNewAssetAccountDescription,
+    },
+  ];
+
   return (
-    <>
-      <div>
-        <p>Create new Asset Account Name</p>
-        <form className="form" onSubmit={handleNewAssetAccountName}>
-          <div className="form-group">
-            <label>Name</label>
-            <input
-              type="text"
-              className="form-control"
-              value={newAssetAccountName}
-              onChange={(e) => setNewAssetAccountName(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label>Description</label>
-            <input
-              type="text"
-              className="form-control"
-              value={newAssetAccountDescription}
-              onChange={(e) => {
-                setNewAssetAccountDescription(e.target.value);
-              }}
-            />
-          </div>
-          <div className="form-group">
-            <button className="btn btn-dark mt-3">Submit</button>
-          </div>
-        </form>
-      </div>
-    </>
+    <GenericNewData
+      title="New Asset Account Name"
+      formFields={formFields}
+      handleNewData={handleNewAssetAccountName}
+    />
   );
 };
 

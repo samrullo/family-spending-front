@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { API_BASE_URL, REGISTRATION_ENDPOINT } from "./apiConfig";
+import { API_BASE_URL, REGISTRATION_ENDPOINT } from "./APIUtils/ApiEndpoints";
 import axios from "axios";
 
 const RegisterForm = () => {

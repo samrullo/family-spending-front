@@ -6,12 +6,12 @@ import { useLocation } from "react-router-dom";
 
 import { useEffect, useState } from "react";
 import DataTable from "../DataTable";
-import { fetchAssetAccountNames, fetchBusiness } from "../APIUtils/fetch_data";
+import { fetchSpendingNames, fetchBusiness } from "../APIUtils/fetch_data";
 
-const AssetAccountName = () => {
+const SpendingName = () => {
   const { businessId } = useParams();
 
-  const [assetAccountNames, setAssetAccountNames] = useState([]);
+  const [spendingNames, setSpendingNames] = useState([]);
   const [business, setBusiness] = useState({});
 
   let { state = {} } = useLocation();
@@ -19,11 +19,11 @@ const AssetAccountName = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const asset_account_names = await fetchAssetAccountNames(businessId);
+      const spending_names = await fetchSpendingNames(businessId);
       console.log(
-        `I got asset_account_names inside AssetAccountName ${asset_account_names.length}`
+        `I got spending_names inside SpendingName ${spending_names.length}`
       );
-      setAssetAccountNames(asset_account_names);
+      setSpendingNames(spending_names);
 
       if (Object.keys(business).length === 0) {
         const business = await fetchBusiness(businessId);
@@ -44,7 +44,7 @@ const AssetAccountName = () => {
 
   useEffect(() => {
     if (selectedRowData) {
-      navigate(`/asset_account_names/${businessId}/edit/${selectedRowData.id}`);
+      navigate(`/spending_names/${businessId}/edit/${selectedRowData.id}`);
     }
   }, [selectedRowData]);
 
@@ -52,30 +52,36 @@ const AssetAccountName = () => {
     <>
       <div className="container bp-5">
         <p>
-          Asset Account Names for business id {businessId} : {business.name}
+          Spending Names for business id {businessId} : {business.name}
         </p>
-        <Link className="btn btn-primary" to={`/businesses/detail/${businessId}`}>Back to business detail</Link>
         <Link
           className="btn btn-primary"
-          to={`/asset_account_names/${businessId}/new`}
+          to={`/businesses/detail/${businessId}`}
         >
-          New asset account name
+          Back to business detail
+        </Link>
+        <Link
+          className="btn btn-primary"
+          to={`/spending_names/${businessId}/new`}
+        >
+          New spending name
         </Link>
 
         <Outlet />
         
       </div>
-      {assetAccountNames.length === 0 ? (
-        <p>No asset account names</p>
+      {spendingNames.length === 0 ? (
+        <p>No spending names</p>
       ) : (
         <DataTable
           onRowClick={handleRowClick}
           hiddenColumns={["id"]}
-          data={assetAccountNames.map((accountName) => {
+          data={spendingNames.map((spendingName) => {
             return {
-              id: accountName.id,
-              name: accountName.name,
-              description: accountName.description,
+              id: spendingName.id,
+              name: spendingName.name,
+              description: spendingName.description,
+              account_name : spendingName.asset_account_name
             };
           })}
         />
@@ -84,4 +90,4 @@ const AssetAccountName = () => {
   );
 };
 
-export default AssetAccountName;
+export default SpendingName;

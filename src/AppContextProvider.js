@@ -1,14 +1,22 @@
 import React from "react";
 import { useState } from "react";
 import AppContext from "./AppContext";
-import { API_BASE_URL, USER_DETAIL_ENDPOINT } from "./components/apiConfig";
+import {
+  API_BASE_URL,
+  USER_DETAIL_ENDPOINT,
+} from "./components/APIUtils/ApiEndpoints";
 import axios from "axios";
 
 const AppContextProvider = ({ children }) => {
+  const [isSpinning, setIsSpinning] = useState(false);
+  const [isSuccessfull, setIsSuccessfull] = useState(false);
+  const [flashMessages,setFlashMessages] = useState([])
+
   const [isLoggedIn, setIsLoggedIn] = useState(
     localStorage.getItem("token") !== null
   );
   const [userInfo, setUserInfo] = useState({});
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const handleLogin = (token) => {
     localStorage.setItem("token", token);
@@ -19,10 +27,9 @@ const AppContextProvider = ({ children }) => {
     // Remove the token from local storage
     localStorage.removeItem("token");
     setIsLoggedIn(false);
-    setUserInfo({})
+    setIsAuthenticated(false);
+    setUserInfo({});
   };
-
-  
 
   const fetchAndSetUserInfo = () => {
     axios
@@ -34,19 +41,28 @@ const AppContextProvider = ({ children }) => {
       .then((response) => {
         console.log(`Received user detail : ${response.data}`);
         setUserInfo(response.data);
+        setIsAuthenticated(true); // Set to true when valid user data is received
       })
       .catch((error) => {
         console.error(error);
+        setIsAuthenticated(false); // Set to false in case of an error
       });
   };
 
   const contextValue = {
     isLoggedIn,
+    isAuthenticated,
     setIsLoggedIn,
     handleLogin,
     handleLogout,
     userInfo,
     fetchAndSetUserInfo,
+    isSpinning,
+    setIsSpinning,
+    isSuccessfull,
+    setIsSuccessfull,
+    flashMessages,
+    setFlashMessages
   };
 
   return (

@@ -4,10 +4,18 @@ import AppContext from "../AppContext";
 import { useEffect } from "react";
 import AppRoutes from "./AppRoutes";
 import { BrowserRouter } from "react-router-dom";
+import NavBar from "./NavBar";
+import { Spinner } from "react-bootstrap";
 
 const MainPage = () => {
-  const { isLoggedIn, handleLogout, userInfo, fetchAndSetUserInfo } =
-    useContext(AppContext);
+  const {
+    isLoggedIn,
+    handleLogout,
+    userInfo,
+    fetchAndSetUserInfo,
+    flashMessages,
+    isSpinning,
+  } = useContext(AppContext);
 
   useEffect(() => {
     if (isLoggedIn && !userInfo.username) {
@@ -15,39 +23,43 @@ const MainPage = () => {
     }
   });
 
+  useEffect(() => {
+    if (localStorage.getItem("token")) {
+      fetchAndSetUserInfo();
+    }
+  }, []);
+
   return (
     <BrowserRouter>
       <div className="container mt-5">
-        <header className="d-flex justify-content-between align-items-center mb-4">
-          <h1>Welcome to Business Accounting {userInfo.username}</h1>
-          <nav>
-            <ul className="list-inline">
-              <li>
-                <Link className="btn btn-dark" to="/">Top</Link>
-              </li>
-              {isLoggedIn ? (
-                <li>
-                  <button className="btn btn-dark" onClick={handleLogout}>
-                    Logout
-                  </button>
-                </li>
-              ) : (
-                <>
-                <li className="list-inline-item">
-                  <Link className="btn btn-dark" to="/login">
-                    Login
-                  </Link>
-                </li>
-                <li className="list-inline-item">
-                  <Link className="btn btn-dark" to="/register">
-                    Register
-                  </Link>
-                </li>
-                </>
-              )}
-            </ul>
-          </nav>
+        <header>
+          <NavBar
+            isLoggedIn={isLoggedIn}
+            title="Business Accounting"
+            authenticatedLinks={[{ link: "/profile", name: userInfo.username }]}
+            nonAuthenticatedLinks={[
+              { link: "/login", name: "Login" },
+              { link: "/register", name: "Register" },
+            ]}
+          />
         </header>
+        {isSpinning && 
+        <div className="text-center">
+          <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        </div>
+      }
+        {flashMessages.length === 0 ? (
+          <></>
+        ) : (
+          flashMessages.map(({ category, message }) => (
+            <div className={`alert alert-${category}`}>
+              <p>{message}</p>
+            </div>
+          ))
+        )}
+
         <AppRoutes />
       </div>
     </BrowserRouter>

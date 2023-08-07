@@ -12,14 +12,8 @@ const Dashboard = () => {
       <p>This is Dashboard for you dear user {userInfo.username}</p>
       {isLoggedIn ? (
         <>
-          <ul>
-            <li>Username : {userInfo.username}</li>
-            <li>User id : {userInfo.pk}</li>
-            <li>User email : {userInfo.email}</li>
-          </ul>
-
-          <ul>
-            <li>
+          <ul className="list-group">
+            <li className="list-group-item">
               <Link className="btn btn-dark" to="/businesses">
                 Business
               </Link>

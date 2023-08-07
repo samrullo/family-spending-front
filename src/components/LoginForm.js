@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import axios from "axios";
-import { API_BASE_URL, LOGIN_ENDPOINT } from "./apiConfig";
+import { API_BASE_URL, LOGIN_ENDPOINT } from "./APIUtils/ApiEndpoints";
 import { useContext } from "react";
 import AppContext from "../AppContext";
 

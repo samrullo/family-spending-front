@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { API_BASE_URL, ASSET_ACCOUNT_NAMES_ENDPOINT } from "../apiConfig";
+import { API_BASE_URL, ASSET_ACCOUNT_NAMES_ENDPOINT } from "../APIUtils/ApiEndpoints";
 import { fetchAssetAccountName } from "../APIUtils/fetch_data";
+import GenericEditData from "../GenericDataComponents/GenericEditData";
 
 const AssetAccountNameEdit = () => {
   const navigate = useNavigate();
@@ -53,7 +54,7 @@ const AssetAccountNameEdit = () => {
     }
   };
 
-  const handleNewAssetAccountName = async (e) => {
+  const handleEditAssetAccountName = async (e) => {
     e.preventDefault();
     await editAssetAccountName(newAssetAccountName, newAssetAccountDescription);
   };
@@ -77,46 +78,31 @@ const AssetAccountNameEdit = () => {
   };
 
   const handleDeleteAssetAccountName = () => {
-    deleteAssetAccountName()
+    deleteAssetAccountName();
   };
-  
+
+  const formFields = [
+    {
+      fieldType: "text",
+      fieldLabel: "Name",
+      fieldValue: newAssetAccountName,
+      setFieldValue: setNewAssetAccountName,
+    },
+    {
+      fieldType: "text",
+      fieldLabel: "Description",
+      fieldValue: newAssetAccountDescription,
+      setFieldValue: setNewAssetAccountDescription,
+    },
+  ];
+
   return (
-    <>
-      <div>
-        <p>Edit Asset Account Name with id {assetAccountNameId}</p>
-        <button
-          className="btn btn-danger"
-          onClick={handleDeleteAssetAccountName}
-        >
-          Delete
-        </button>
-        <form className="form" onSubmit={handleNewAssetAccountName}>
-          <div className="form-group">
-            <label>Name</label>
-            <input
-              type="text"
-              className="form-control"
-              value={newAssetAccountName}
-              onChange={(e) => setNewAssetAccountName(e.target.value)}
-            />
-          </div>
-          <div className="form-group">
-            <label>Description</label>
-            <input
-              type="text"
-              className="form-control"
-              value={newAssetAccountDescription}
-              onChange={(e) => {
-                setNewAssetAccountDescription(e.target.value);
-              }}
-            />
-          </div>
-          <div className="form-group">
-            <button className="btn btn-dark mt-3">Edit</button>
-          </div>
-        </form>
-      </div>
-    </>
+    <GenericEditData
+      title={`Edit asset account name ${assetAccountNameId}`}
+      formFields={formFields}
+      handleEdit={handleEditAssetAccountName}
+      handleDelete={handleDeleteAssetAccountName}
+    />
   );
 };
 

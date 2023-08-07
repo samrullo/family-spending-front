@@ -4,8 +4,13 @@ import { useState } from "react";
 
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import "ag-grid-community/styles/ag-theme-balham.css";
+import "ag-grid-community/styles/ag-theme-material.css";
 
-const DataTable = ({ data,onRowClick }) => {
+const DataTable = ({ data, hiddenColumns, onRowClick, width_pct }) => {
+  if (!width_pct) {
+    width_pct = 50;
+  }
   const [rowData, setRowData] = useState(data);
 
   useEffect(() => {
@@ -28,9 +33,12 @@ const DataTable = ({ data,onRowClick }) => {
     }
   };
 
-  const columnDefs = Object.keys(data[0]).map((columnKey) => ({
+  const allColumnDefs = Object.keys(data[0]).map((columnKey) => ({
     field: columnKey,
     headerName: columnKey,
+    valueFormatter: (params) =>
+      params.value ? params.value.toLocaleString() : null,
+    sortable: true,
     filter: true,
     filterParams: {
       filterOptions: ["contains", "notContains", "startsWith", "endsWith"],
@@ -38,11 +46,21 @@ const DataTable = ({ data,onRowClick }) => {
     },
   }));
 
+  const myHiddenColumns = hiddenColumns || [];
+  //console.log(`myHiddenColumns are ${myHiddenColumns}`)
+  const columnDefs = allColumnDefs.map((columnDef) => {
+    if (myHiddenColumns.includes(columnDef.field)) {
+      return { ...columnDef, hide: true };
+    } else {
+      return columnDef;
+    }
+  });
+
   return (
     <div className="container mt-5">
       <div
-        className="ag-theme-alpine"
-        style={{ height: "400px", width: "50%" }}
+        className="ag-theme-material"
+        style={{ height: "400px", width: `${width_pct}%` }}
       >
         <AgGridReact
           columnDefs={columnDefs}

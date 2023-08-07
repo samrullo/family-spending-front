@@ -1,54 +1,41 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Outlet } from "react-router-dom";
 
-import axios from "axios";
-import { API_BASE_URL, BUSINESSES_ENDPOINT } from "./apiConfig";
-import { useContext } from "react";
-import AppContext from "../AppContext";
-import DataTable from "./DataTable";
 import { Link } from "react-router-dom";
+import { fetchBusinesses } from "./APIUtils/fetch_data";
 
 const Business = () => {
   const [businesses, setBusinesses] = useState([]);
-  const [selectedBusiness, setSelectedBusiness] = useState();
 
   useEffect(() => {
-    if (businesses.length === 0) {
-      fetchBusinesses();
-    }
+    const fetchData = async () => {
+      const businesses = await fetchBusinesses();
+      setBusinesses(businesses);
+    };
+    fetchData();
   }, []);
 
-  const fetchBusinesses = async () => {
-    try {
-      const response = await axios.get(
-        `${API_BASE_URL}/${BUSINESSES_ENDPOINT}`,
-        {
-          headers: {
-            Authorization: `Token ${localStorage.getItem("token")}`,
-          },
-        }
-      );
-      setBusinesses(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  
   return (
     <>
       {businesses.length === 0 ? (
         <>
-          <p>businesses length is zero</p>
+          <p>There are no businesses</p>
+          <Link className="btn btn-primary" to={`/businesses/new`}>New business</Link>
         </>
       ) : (
-        <ul>
-          {businesses.map((business)=>{
-            return <li key={business.id}><Link className="btn btn-primary" to={`/businesses/detail/${business.id}`}>Business detail</Link></li>
+        <ul className="list-group">
+          {businesses.map((business) => {
+            return (
+              <li key={business.id} className="list-group-item">
+                <Link
+                  className="btn btn-primary"
+                  to={`/businesses/detail/${business.id}`}
+                >
+                  {business.name}
+                </Link>
+              </li>
+            );
           })}
         </ul>
-
       )}
     </>
   );
