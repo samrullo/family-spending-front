@@ -11,6 +11,11 @@ import {
   fetchAssetAccountNames,
 } from "../APIUtils/fetch_data";
 import GenericEditData from "../GenericDataComponents/GenericEditData";
+import {
+  updateResource,
+  deleteResource,
+  createResource,
+} from "../APIUtils/create_data";
 
 const SpendingNameEdit = () => {
   const navigate = useNavigate();
@@ -56,30 +61,22 @@ const SpendingNameEdit = () => {
   });
 
   const editSpendingName = async (name, description, assetAccountNameId) => {
-    try {
-      console.log(
-        `will attempt to update spending id : ${spendingNameId}, name ${name}, desc ${description}, asset account name id ${assetAccountNameId}`
-      );
-      const response = await axios.put(
-        `${API_BASE_URL}${SPENDING_NAMES_ENDPOINT}${spendingNameId}/`,
-        {
-          id: spendingNameId,
-          business: businessId,
-          name: name,
-          description: description,
-          associated_asset_account_name: assetAccountNameId,
-        },
-        { headers: { Authorization: `Token ${localStorage.getItem("token")}` } }
-      );
-
-      console.log(`successfully edited ${JSON.stringify(response.data)}`);
-      navigate(`/spending_names/${businessId}`, {
-        replace: true,
-        state: { timestamp: new Date().getTime() },
-      });
-    } catch (error) {
-      console.log(`error while editing spending name : ${error}`);
-    }
+    const new_payload = {
+      id: spendingNameId,
+      business: businessId,
+      name: name,
+      description: description,
+      associated_asset_account_name: assetAccountNameId,
+    };
+    await createResource(
+      `${API_BASE_URL}${SPENDING_NAMES_ENDPOINT}${spendingNameId}/`,
+      new_payload,
+      "spending name"
+    );
+    navigate(`/spending_names/${businessId}`, {
+      replace: true,
+      state: { timestamp: new Date().getTime() },
+    });
   };
 
   const handleEditSpendingName = async (e) => {
@@ -92,19 +89,14 @@ const SpendingNameEdit = () => {
   };
 
   const deleteSpendingName = async () => {
-    try {
-      const response = await axios.delete(
-        `${API_BASE_URL}${SPENDING_NAMES_ENDPOINT}${spendingNameId}`,
-        { headers: { Authorization: `Token ${localStorage.getItem("token")}` } }
-      );
-      console.log(` successfully deleted ${spendingNameId} ${response.data}`);
-      navigate(`/spending_names/${businessId}`, {
-        replace: true,
-        state: { timestamp: new Date().getTime() },
-      });
-    } catch (error) {
-      console.log(`Error when deleting spending name ${error}`);
-    }
+    await deleteResource(
+      `${API_BASE_URL}${SPENDING_NAMES_ENDPOINT}${spendingNameId}`,
+      "spending name"
+    );
+    navigate(`/spending_names/${businessId}`, {
+      replace: true,
+      state: { timestamp: new Date().getTime() },
+    });
   };
 
   const handleDeleteSpendingName = () => {

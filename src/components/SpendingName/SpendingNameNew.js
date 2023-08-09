@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { API_BASE_URL,SPENDING_NAMES_ENDPOINT } from "../APIUtils/ApiEndpoints";
+import {
+  API_BASE_URL,
+  SPENDING_NAMES_ENDPOINT,
+} from "../APIUtils/ApiEndpoints";
 import GenericNewData from "../GenericDataComponents/GenericNewData";
 import { fetchAssetAccountNames } from "../APIUtils/fetch_data";
+import { createResource } from "../APIUtils/create_data";
 
 const SpendingNameNew = () => {
   const navigate = useNavigate();
@@ -11,7 +15,7 @@ const SpendingNameNew = () => {
   const [newSpendingName, setNewSpendingName] = useState("");
   const [newSpendingDescription, setNewSpendingDescription] = useState("");
   const [assetAccountNames, setAssetAccountNames] = useState([]);
-  const [newAssetAccountName, setNewAssetAccountName]= useState("")
+  const [newAssetAccountName, setNewAssetAccountName] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -20,40 +24,37 @@ const SpendingNameNew = () => {
     };
 
     fetchData();
-  },[]);
- 
-  
+  }, []);
+
   const assetAccountNameOptions = assetAccountNames.map((assetAccountName) => {
     return { value: assetAccountName.id, label: assetAccountName.name };
   });
 
   const createSpendingName = async (name, description, assetAccountNameId) => {
-    try {
-      console.log(`about to create new spending name : ${name}, description : ${description}, asset account name id : ${assetAccountNameId}`)
-      const response = await axios.post(
-        `${API_BASE_URL}${SPENDING_NAMES_ENDPOINT}`,
-        {
-          business: businessId,
-          name: name,
-          description: description,
-          associated_asset_account_name: assetAccountNameId,
-        },
-        { headers: { Authorization: `Token ${localStorage.getItem("token")}` } }
-      );
-
-      console.log(`successfully created ${JSON.stringify(response.data)}`);
-      navigate(`/spending_names/${businessId}`, {
-        replace: true,
-        state: { timestamp: new Date().getTime() },
-      });
-    } catch (error) {
-      console.log(`error while creating a new spending name : ${error}`);
-    }
+    const new_payload = {
+      business: businessId,
+      name: name,
+      description: description,
+      associated_asset_account_name: assetAccountNameId,
+    };
+    await createResource(
+      `${API_BASE_URL}${SPENDING_NAMES_ENDPOINT}`,
+      new_payload,
+      "spending name"
+    );
+    navigate(`/spending_names/${businessId}`, {
+      replace: true,
+      state: { timestamp: new Date().getTime() },
+    });
   };
 
   const handleNewSpendingName = async (e) => {
     e.preventDefault();
-    await createSpendingName(newSpendingName, newSpendingDescription,newAssetAccountName.value);
+    await createSpendingName(
+      newSpendingName,
+      newSpendingDescription,
+      newAssetAccountName.value
+    );
   };
 
   const formFields = [
@@ -72,8 +73,8 @@ const SpendingNameNew = () => {
     {
       fieldType: "select",
       fieldLabel: "Asset Account Name",
-      fieldValue:newAssetAccountName,
-      setFieldValue:setNewAssetAccountName,
+      fieldValue: newAssetAccountName,
+      setFieldValue: setNewAssetAccountName,
       selectOptions: assetAccountNameOptions,
     },
   ];

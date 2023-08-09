@@ -1,8 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { API_BASE_URL, REGISTRATION_ENDPOINT } from "./APIUtils/ApiEndpoints";
 import axios from "axios";
+import AppContext from "../AppContext";
+import { loginUser } from "./APIUtils/UserManagement";
+import { getCookie } from "./APIUtils/get_csrf";
 
 const RegisterForm = () => {
+  const navigate = useNavigate();
+  const { handleLogin } = useContext(AppContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -11,6 +17,7 @@ const RegisterForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      const csrf_token = getCookie("csrftoken");
       const response = await axios.post(
         `${API_BASE_URL}${REGISTRATION_ENDPOINT}`,
         {
@@ -18,17 +25,19 @@ const RegisterForm = () => {
           email: email,
           password1: password,
           password2: password2,
-        }
+        },
+        { "X-CSRFToken": csrf_token }
       );
       console.log(
         `Sent POST request to registration endpoint and received response : ${response.data}`
       );
+      const register_response_data = await loginUser(username, password);
+      handleLogin(register_response_data.key)
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
-    // Perform registration logic here
-    console.log("Username:", username);
-    console.log("Password:", password);
+
     // Clear form fields
     setUsername("");
     setPassword("");

@@ -1,13 +1,15 @@
 import { useContext } from "react";
 import AppContext from "../AppContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const NavBar = ({
-  title,
-  authenticatedLinks,
-  nonAuthenticatedLinks,
-}) => {
-  const { isLoggedIn,handleLogout } = useContext(AppContext);
+const NavBar = ({ title, authenticatedLinks, nonAuthenticatedLinks }) => {
+  const navigate = useNavigate();
+  const { isLoggedIn, handleLogout } = useContext(AppContext);
+
+  const processLogout = () => {
+    handleLogout();
+    navigate("/");
+  };
   return (
     <nav className="navbar navbar-expand-lg bg-light navbar-light">
       <Link className="navbar-brand" to="/">
@@ -29,7 +31,7 @@ const NavBar = ({
                   <Link className="nav-link" to={authenticatedLink.link}>
                     {authenticatedLink.name}
                   </Link>
-                </li>                
+                </li>
               ))
             : nonAuthenticatedLinks.map((nonAuthenticateLink) => (
                 <li className="nav-item" key={nonAuthenticateLink.name}>
@@ -38,8 +40,17 @@ const NavBar = ({
                   </Link>
                 </li>
               ))}
-              {isLoggedIn?(<>
-              <li className="nav-item" key="logout"><button className="nav-link" onClick={handleLogout}>Logout</button></li></>):(<></>)}
+          {isLoggedIn ? (
+            <>
+              <li className="nav-item" key="logout">
+                <button className="nav-link" onClick={processLogout}>
+                  Logout
+                </button>
+              </li>
+            </>
+          ) : (
+            <></>
+          )}
         </ul>
       </div>
     </nav>

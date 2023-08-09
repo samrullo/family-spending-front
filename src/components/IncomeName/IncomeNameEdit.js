@@ -2,13 +2,13 @@ import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import { API_BASE_URL, INCOME_NAMES_ENDPOINT } from "../APIUtils/ApiEndpoints";
 import {
-  API_BASE_URL,
-  INCOME_NAMES_ENDPOINT,
-} from "../APIUtils/ApiEndpoints";
-import { fetchIncomeName,fetchAssetAccountNames } from "../APIUtils/fetch_data";
+  fetchIncomeName,
+  fetchAssetAccountNames,
+} from "../APIUtils/fetch_data";
 import GenericEditData from "../GenericDataComponents/GenericEditData";
-
+import { updateResource, deleteResource } from "../APIUtils/create_data";
 
 const IncomeNameEdit = () => {
   const navigate = useNavigate();
@@ -55,30 +55,22 @@ const IncomeNameEdit = () => {
   });
 
   const editIncomeName = async (name, description, assetAccountNameId) => {
-    try {
-      console.log(
-        `will attempt to update income id : ${incomeNameId}, name ${name}, desc ${description}, asset account name id ${assetAccountNameId}`
-      );
-      const response = await axios.put(
-        `${API_BASE_URL}${INCOME_NAMES_ENDPOINT}${incomeNameId}/`,
-        {
-          id: incomeNameId,
-          business: businessId,
-          name: name,
-          description: description,
-          associated_asset_account_name: assetAccountNameId,
-        },
-        { headers: { Authorization: `Token ${localStorage.getItem("token")}` } }
-      );
-
-      console.log(`successfully edited ${JSON.stringify(response.data)}`);
-      navigate(`/income_names/${businessId}`, {
-        replace: true,
-        state: { timestamp: new Date().getTime() },
-      });
-    } catch (error) {
-      console.log(`error while editing income name : ${error}`);
-    }
+    const new_payload = {
+      id: incomeNameId,
+      business: businessId,
+      name: name,
+      description: description,
+      associated_asset_account_name: assetAccountNameId,
+    };
+    await updateResource(
+      `${API_BASE_URL}${INCOME_NAMES_ENDPOINT}${incomeNameId}/`,
+      new_payload,
+      "income name"
+    );
+    navigate(`/income_names/${businessId}`, {
+      replace: true,
+      state: { timestamp: new Date().getTime() },
+    });
   };
 
   const handleEditIncomeName = async (e) => {
@@ -91,19 +83,14 @@ const IncomeNameEdit = () => {
   };
 
   const deleteIncomeName = async () => {
-    try {
-      const response = await axios.delete(
-        `${API_BASE_URL}${INCOME_NAMES_ENDPOINT}${incomeNameId}`,
-        { headers: { Authorization: `Token ${localStorage.getItem("token")}` } }
-      );
-      console.log(` successfully deleted ${incomeNameId} ${response.data}`);
-      navigate(`/income_names/${businessId}`, {
-        replace: true,
-        state: { timestamp: new Date().getTime() },
-      });
-    } catch (error) {
-      console.log(`Error when deleting income name ${error}`);
-    }
+    await deleteResource(
+      `${API_BASE_URL}${INCOME_NAMES_ENDPOINT}${incomeNameId}`,
+      "income name"
+    );
+    navigate(`/income_names/${businessId}`, {
+      replace: true,
+      state: { timestamp: new Date().getTime() },
+    });
   };
 
   const handleDeleteIncomeName = () => {

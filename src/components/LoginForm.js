@@ -5,9 +5,10 @@ import axios from "axios";
 import { API_BASE_URL, LOGIN_ENDPOINT } from "./APIUtils/ApiEndpoints";
 import { useContext } from "react";
 import AppContext from "../AppContext";
+import { getCookie } from "./APIUtils/get_csrf";
 
 const LoginForm = () => {
-  const navigate  = useNavigate();
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [apiError, setAPIError] = useState("");
@@ -27,10 +28,17 @@ const LoginForm = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${API_BASE_URL}${LOGIN_ENDPOINT}`, {
-        username: username,
-        password: password,
-      });
+      const csrf_token = getCookie("csrftoken");
+      const response = await axios.post(
+        `${API_BASE_URL}${LOGIN_ENDPOINT}`,
+        {
+          username: username,
+          password: password,
+        },
+        {
+          "X-CSRFToken": csrf_token,
+        }
+      );
       console.log(`response.data : ${response.data}`);
       //localStorage.setItem("token", response.data.key);
       handleLogin(response.data.key);
@@ -43,7 +51,7 @@ const LoginForm = () => {
       // Reset the form fields
       setUsername("");
       setPassword("");
-      navigate("/")
+      navigate("/");
     } catch (error) {
       setAPIError("Invalid username or password");
       console.log(apiError);

@@ -1,10 +1,14 @@
 import axios from "axios";
+import { getCookie } from "./get_csrf";
 
 export const createResource = async (apiEndpoint, payload, resource_name) => {
   try {
+    const csrf_token = getCookie("csrftoken");
+    console.log(`obtained csrf token ${csrf_token}`);
     const response = await axios.post(apiEndpoint, payload, {
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
+        "X-CSRFToken": csrf_token,
       },
     });
     const posted_data = await response.data;
@@ -25,9 +29,12 @@ export const createResource = async (apiEndpoint, payload, resource_name) => {
 
 export const updateResource = async (apiEndpoint, payload, resource_name) => {
   try {
+    const csrf_token = getCookie("csrftoken");
+    console.log(`obtained csrf token ${csrf_token}`);
     const response = await axios.put(apiEndpoint, payload, {
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
+        "X-CSRFToken": csrf_token,
       },
     });
     const updated_data = await response.data;
@@ -48,9 +55,12 @@ export const updateResource = async (apiEndpoint, payload, resource_name) => {
 
 export const deleteResource = async (apiEndpoint, resource_name) => {
   try {
+    const csrf_token = getCookie("csrftoken");
+    console.log(`obtained csrf token ${csrf_token}`);
     const response = await axios.delete(apiEndpoint, {
       headers: {
         Authorization: `Token ${localStorage.getItem("token")}`,
+        "X-CSRFToken": csrf_token,
       },
     });
     const deleted_data = await response.data;

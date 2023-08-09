@@ -76,6 +76,7 @@ const IncomeName = () => {
         <DataTable
           onRowClick={handleRowClick}
           hiddenColumns={["id"]}
+          width_pct={100}
           data={incomeNames.map((incomeName) => {
             return {
               id: incomeName.id,

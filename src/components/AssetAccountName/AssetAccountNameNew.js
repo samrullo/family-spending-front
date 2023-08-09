@@ -1,7 +1,10 @@
 import { useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { API_BASE_URL, ASSET_ACCOUNT_NAMES_ENDPOINT } from "../APIUtils/ApiEndpoints";
+import {
+  API_BASE_URL,
+  ASSET_ACCOUNT_NAMES_ENDPOINT,
+} from "../APIUtils/ApiEndpoints";
 import GenericNewData from "../GenericDataComponents/GenericNewData";
 import { createResource } from "../APIUtils/create_data";
 
@@ -13,21 +16,20 @@ const AssetAccountNameNew = () => {
     useState("");
 
   const createAssetAccountName = async (name, description) => {
-    try {
-      const response = await axios.post(
-        `${API_BASE_URL}${ASSET_ACCOUNT_NAMES_ENDPOINT}`,
-        { business: businessId, name: name, description: description },
-        { headers: { Authorization: `Token ${localStorage.getItem("token")}` } }
-      );
-
-      console.log(`successfully created ${JSON.stringify(response.data)}`);
-      navigate(`/asset_account_names/${businessId}`, {
-        replace: true,
-        state: { timestamp: new Date().getTime() },
-      });
-    } catch (error) {
-      console.log(`error while creating a new asset account name : ${error}`);
-    }
+    const new_payload = {
+      business: businessId,
+      name: name,
+      description: description,
+    };
+    await createResource(
+      `${API_BASE_URL}${ASSET_ACCOUNT_NAMES_ENDPOINT}`,
+      new_payload,
+      "asset account name"
+    );
+    navigate(`/asset_account_names/${businessId}`, {
+      replace: true,
+      state: { timestamp: new Date().getTime() },
+    });
   };
 
   const handleNewAssetAccountName = async (e) => {

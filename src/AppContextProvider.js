@@ -10,7 +10,7 @@ import axios from "axios";
 const AppContextProvider = ({ children }) => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [isSuccessfull, setIsSuccessfull] = useState(false);
-  const [flashMessages,setFlashMessages] = useState([])
+  const [flashMessages, setFlashMessages] = useState([]);
 
   const [isLoggedIn, setIsLoggedIn] = useState(
     localStorage.getItem("token") !== null
@@ -62,7 +62,7 @@ const AppContextProvider = ({ children }) => {
     isSuccessfull,
     setIsSuccessfull,
     flashMessages,
-    setFlashMessages
+    setFlashMessages,
   };
 
   return (

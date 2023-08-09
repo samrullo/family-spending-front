@@ -76,6 +76,7 @@ const SpendingName = () => {
         <DataTable
           onRowClick={handleRowClick}
           hiddenColumns={["id"]}
+          width_pct={100}
           data={spendingNames.map((spendingName) => {
             return {
               id: spendingName.id,

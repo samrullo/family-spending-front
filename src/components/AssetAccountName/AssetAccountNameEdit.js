@@ -2,9 +2,13 @@ import { useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
-import { API_BASE_URL, ASSET_ACCOUNT_NAMES_ENDPOINT } from "../APIUtils/ApiEndpoints";
+import {
+  API_BASE_URL,
+  ASSET_ACCOUNT_NAMES_ENDPOINT,
+} from "../APIUtils/ApiEndpoints";
 import { fetchAssetAccountName } from "../APIUtils/fetch_data";
 import GenericEditData from "../GenericDataComponents/GenericEditData";
+import { updateResource, deleteResource } from "../APIUtils/create_data";
 
 const AssetAccountNameEdit = () => {
   const navigate = useNavigate();
@@ -32,26 +36,21 @@ const AssetAccountNameEdit = () => {
   }, [assetAccountName]);
 
   const editAssetAccountName = async (name, description) => {
-    try {
-      const response = await axios.put(
-        `${API_BASE_URL}${ASSET_ACCOUNT_NAMES_ENDPOINT}${assetAccountNameId}/`,
-        {
-          id: assetAccountNameId,
-          business: businessId,
-          name: name,
-          description: description,
-        },
-        { headers: { Authorization: `Token ${localStorage.getItem("token")}` } }
-      );
-
-      console.log(`successfully edited ${JSON.stringify(response.data)}`);
-      navigate(`/asset_account_names/${businessId}`, {
-        replace: true,
-        state: { timestamp: new Date().getTime() },
-      });
-    } catch (error) {
-      console.log(`error while editing a new asset account name : ${error}`);
-    }
+    const new_payload = {
+      id: assetAccountNameId,
+      business: businessId,
+      name: name,
+      description: description,
+    };
+    await updateResource(
+      `${API_BASE_URL}${ASSET_ACCOUNT_NAMES_ENDPOINT}${assetAccountNameId}/`,
+      new_payload,
+      "asset account name"
+    );
+    navigate(`/asset_account_names/${businessId}`, {
+      replace: true,
+      state: { timestamp: new Date().getTime() },
+    });
   };
 
   const handleEditAssetAccountName = async (e) => {
@@ -60,21 +59,14 @@ const AssetAccountNameEdit = () => {
   };
 
   const deleteAssetAccountName = async () => {
-    try {
-      const response = await axios.delete(
-        `${API_BASE_URL}${ASSET_ACCOUNT_NAMES_ENDPOINT}${assetAccountNameId}`,
-        { headers: { Authorization: `Token ${localStorage.getItem("token")}` } }
-      );
-      console.log(
-        ` successfully deleted ${assetAccountNameId} ${response.data}`
-      );
-      navigate(`/asset_account_names/${businessId}`, {
-        replace: true,
-        state: { timestamp: new Date().getTime() },
-      });
-    } catch (error) {
-      console.log(`Error when deleting asset account name ${error}`);
-    }
+    await deleteResource(
+      `${API_BASE_URL}${ASSET_ACCOUNT_NAMES_ENDPOINT}${assetAccountNameId}`,
+      "asset account name"
+    );
+    navigate(`/asset_account_names/${businessId}`, {
+      replace: true,
+      state: { timestamp: new Date().getTime() },
+    });
   };
 
   const handleDeleteAssetAccountName = () => {

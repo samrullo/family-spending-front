@@ -71,6 +71,7 @@ const AssetAccountName = () => {
         <DataTable
           onRowClick={handleRowClick}
           hiddenColumns={["id"]}
+          width_pct={100}
           data={assetAccountNames.map((accountName) => {
             return {
               id: accountName.id,
