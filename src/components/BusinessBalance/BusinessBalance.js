@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
@@ -6,15 +6,18 @@ import { Outlet, useParams } from "react-router-dom";
 import { fetchBusinessBalances, fetchBusiness } from "../APIUtils/fetch_data";
 import DataTable from "../DataTable";
 import { Link } from "react-router-dom";
+import AppContext from "../../AppContext";
 
 const BusinessBalance = () => {
   const navigate = useNavigate();
+  const {flashMessages,setFlashMessages}=useContext(AppContext)
   const { businessId } = useParams();
   const [businessBalances, setBusinessBalances] = useState([]);
   const [business, setBusiness] = useState({});
 
   let { state = {} } = useLocation();
   let { timestamp } = state ?? {};
+  console.log(`timestamp in BusinessBalances is ${timestamp}`)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,7 +29,13 @@ const BusinessBalance = () => {
       setBusiness(business);
     };
     fetchData();
+    if(flashMessages.length!==0){
+      setTimeout(() => {
+        setFlashMessages([])
+      }, 3000);
+    }
   }, [timestamp]);
+
 
   const [selectedRowData, setSelectedRowData] = useState(null);
 

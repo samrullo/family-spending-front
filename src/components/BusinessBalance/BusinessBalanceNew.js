@@ -174,17 +174,14 @@ const BusinessBalanceNew = () => {
         category: "success",
         message: `Successfully generated new busines balance as of ${adate}`,
       },
-    ]);
+    ]);    
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(`adate is ${adate}`);
 
-    createNewBusinessBalanceInLoop();
-    setTimeout(() => {
-      setFlashMessages([]);
-    }, 5000);
+    createNewBusinessBalanceInLoop();    
 
     navigate(`/business_balances/${businessId}`, {
       replace: true,

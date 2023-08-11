@@ -14,6 +14,7 @@ const MainPage = () => {
     userInfo,
     fetchAndSetUserInfo,
     flashMessages,
+    setFlashMessages,
     isSpinning,
   } = useContext(AppContext);
 
@@ -21,7 +22,8 @@ const MainPage = () => {
     if (isLoggedIn && !userInfo.username) {
       fetchAndSetUserInfo();
     }
-  });
+    
+  },[]);
 
   useEffect(() => {
     if (localStorage.getItem("token")) {

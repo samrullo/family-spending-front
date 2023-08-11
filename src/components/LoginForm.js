@@ -29,6 +29,7 @@ const LoginForm = () => {
 
     try {
       const csrf_token = getCookie("csrftoken");
+      console.log(`got csrf token before logging in ${csrf_token}`);
       const response = await axios.post(
         `${API_BASE_URL}${LOGIN_ENDPOINT}`,
         {
@@ -36,7 +37,9 @@ const LoginForm = () => {
           password: password,
         },
         {
-          "X-CSRFToken": csrf_token,
+          headers: {
+            "X-CSRFToken": csrf_token,
+          },
         }
       );
       console.log(`response.data : ${response.data}`);
@@ -54,6 +57,7 @@ const LoginForm = () => {
       navigate("/");
     } catch (error) {
       setAPIError("Invalid username or password");
+      console.log(`error while logging in ${error}`);
       console.log(apiError);
     }
   };

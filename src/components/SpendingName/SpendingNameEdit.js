@@ -68,7 +68,7 @@ const SpendingNameEdit = () => {
       description: description,
       associated_asset_account_name: assetAccountNameId,
     };
-    await createResource(
+    await updateResource(
       `${API_BASE_URL}${SPENDING_NAMES_ENDPOINT}${spendingNameId}/`,
       new_payload,
       "spending name"

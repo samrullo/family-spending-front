@@ -8,7 +8,8 @@ import { getCookie } from "./APIUtils/get_csrf";
 
 const RegisterForm = () => {
   const navigate = useNavigate();
-  const { handleLogin } = useContext(AppContext);
+  const { isLoggedIn, handleLogin, fetchAndSetUserInfo, userInfo } =
+    useContext(AppContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -26,13 +27,18 @@ const RegisterForm = () => {
           password1: password,
           password2: password2,
         },
-        { "X-CSRFToken": csrf_token }
+        {
+          headers: {
+            "X-CSRFToken": csrf_token,
+          },
+        }
       );
       console.log(
         `Sent POST request to registration endpoint and received response : ${response.data}`
       );
       const register_response_data = await loginUser(username, password);
       handleLogin(register_response_data.key)
+      fetchAndSetUserInfo()
       navigate("/");
     } catch (error) {
       console.log(error);

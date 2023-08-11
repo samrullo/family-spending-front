@@ -1,7 +1,4 @@
-const API_HOSTNAME =
-  process.env.NODE_ENV === "development"
-    ? process.env.REACT_APP_API_DEV_HOSTNAME
-    : process.env.REACT_APP_API_PROD_HOSTNAME;
+const API_HOSTNAME = window.REACT_APP_API_HOSTNAME || "http://localhost:8000";
 
 export const API_BASE_URL = `${API_HOSTNAME}/api/v1/`;
 export const LOGIN_ENDPOINT = "dj-rest-auth/login/";

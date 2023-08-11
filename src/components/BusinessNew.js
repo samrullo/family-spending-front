@@ -21,15 +21,20 @@ const BusinessNew = () => {
 
   const handleNewData = (e) => {
     e.preventDefault();
-    console.log(`userINfo that I got is this ${JSON.stringify(userInfo)}`)
-    const payload = { "name": name, "owner": userInfo.pk };
-    console.log(`about to create new business with payload ${JSON.stringify(payload)}`)
+    console.log(`userINfo that I got is this ${JSON.stringify(userInfo)}`);
+    const payload = { name: name, owner: userInfo.pk };
+    console.log(
+      `about to create new business with payload ${JSON.stringify(payload)}`
+    );
     createResource(
       `${API_BASE_URL}${BUSINESSES_ENDPOINT}`,
       payload,
       "business"
     );
-    navigate("/businesses");
+    navigate("/businesses", {
+      replace: true,
+      state: { timestamp: new Date().getTime() },
+    });
   };
 
   return (
