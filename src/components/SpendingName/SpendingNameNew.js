@@ -14,6 +14,7 @@ const SpendingNameNew = () => {
   const { businessId } = useParams();
   const [newSpendingName, setNewSpendingName] = useState("");
   const [newSpendingDescription, setNewSpendingDescription] = useState("");
+  const [newSpendingDefaultAmount, setNewSpendingDefaultAmount] = useState(0);
   const [assetAccountNames, setAssetAccountNames] = useState([]);
   const [newAssetAccountName, setNewAssetAccountName] = useState("");
 
@@ -30,11 +31,17 @@ const SpendingNameNew = () => {
     return { value: assetAccountName.id, label: assetAccountName.name };
   });
 
-  const createSpendingName = async (name, description, assetAccountNameId) => {
+  const createSpendingName = async (
+    name,
+    description,
+    defaultAmount,
+    assetAccountNameId
+  ) => {
     const new_payload = {
       business: businessId,
       name: name,
       description: description,
+      default_amount: defaultAmount,
       associated_asset_account_name: assetAccountNameId,
     };
     await createResource(
@@ -53,6 +60,7 @@ const SpendingNameNew = () => {
     await createSpendingName(
       newSpendingName,
       newSpendingDescription,
+      newSpendingDefaultAmount,
       newAssetAccountName.value
     );
   };
@@ -69,6 +77,12 @@ const SpendingNameNew = () => {
       fieldLabel: "Description",
       fieldValue: newSpendingDescription,
       setFieldValue: setNewSpendingDescription,
+    },
+    {
+      fieldType: "number",
+      fieldLabel: "Default Amount",
+      fieldValue: newSpendingDefaultAmount,
+      setFieldValue: setNewSpendingDefaultAmount,
     },
     {
       fieldType: "select",

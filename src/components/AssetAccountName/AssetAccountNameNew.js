@@ -14,12 +14,15 @@ const AssetAccountNameNew = () => {
   const [newAssetAccountName, setNewAssetAccountName] = useState("");
   const [newAssetAccountDescription, setNewAssetAccountDescription] =
     useState("");
+  const [newAssetAccountDefaultAmount, setNewAssetAccountDefaultAmount] =
+    useState(0);
 
-  const createAssetAccountName = async (name, description) => {
+  const createAssetAccountName = async (name, description,defaultAmount) => {
     const new_payload = {
       business: businessId,
-      name: name,
+      name: name,  
       description: description,
+      default_amount: defaultAmount
     };
     await createResource(
       `${API_BASE_URL}${ASSET_ACCOUNT_NAMES_ENDPOINT}`,
@@ -36,7 +39,8 @@ const AssetAccountNameNew = () => {
     e.preventDefault();
     await createAssetAccountName(
       newAssetAccountName,
-      newAssetAccountDescription
+      newAssetAccountDescription,
+      newAssetAccountDefaultAmount
     );
   };
 
@@ -52,6 +56,12 @@ const AssetAccountNameNew = () => {
       fieldLabel: "Description",
       fieldValue: newAssetAccountDescription,
       setFieldValue: setNewAssetAccountDescription,
+    },
+    {
+      fieldType: "number",
+      fieldLabel: "Default Amount",
+      fieldValue: newAssetAccountDefaultAmount,
+      setFieldValue: setNewAssetAccountDefaultAmount,
     },
   ];
 

@@ -16,6 +16,8 @@ const AssetAccountNameEdit = () => {
   const [newAssetAccountName, setNewAssetAccountName] = useState("");
   const [newAssetAccountDescription, setNewAssetAccountDescription] =
     useState("");
+  const [newAssetAccountDefaultAmount, setNewAssetAccountDefaultAmount] =
+    useState(0);
 
   const [assetAccountName, setAssetAccountName] = useState(null);
 
@@ -32,14 +34,16 @@ const AssetAccountNameEdit = () => {
     if (assetAccountName) {
       setNewAssetAccountName(assetAccountName.name);
       setNewAssetAccountDescription(assetAccountName.description);
+      setNewAssetAccountDefaultAmount(assetAccountName.default_amount);
     }
   }, [assetAccountName]);
 
-  const editAssetAccountName = async (name, description) => {
+  const editAssetAccountName = async (name, description, defaultAmount) => {
     const new_payload = {
       id: assetAccountNameId,
       business: businessId,
       name: name,
+      default_amount: defaultAmount,
       description: description,
     };
     await updateResource(
@@ -55,7 +59,11 @@ const AssetAccountNameEdit = () => {
 
   const handleEditAssetAccountName = async (e) => {
     e.preventDefault();
-    await editAssetAccountName(newAssetAccountName, newAssetAccountDescription);
+    await editAssetAccountName(
+      newAssetAccountName,
+      newAssetAccountDescription,
+      newAssetAccountDefaultAmount
+    );
   };
 
   const deleteAssetAccountName = async () => {
@@ -85,6 +93,12 @@ const AssetAccountNameEdit = () => {
       fieldLabel: "Description",
       fieldValue: newAssetAccountDescription,
       setFieldValue: setNewAssetAccountDescription,
+    },
+    {
+      fieldType: "number",
+      fieldLabel: "Default Amount",
+      fieldValue: newAssetAccountDefaultAmount,
+      setFieldValue: setNewAssetAccountDefaultAmount,
     },
   ];
 

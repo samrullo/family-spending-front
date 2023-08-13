@@ -15,6 +15,7 @@ const IncomeNameEdit = () => {
   const { businessId, incomeNameId } = useParams();
   const [newIncomeName, setNewIncomeName] = useState("");
   const [newIncomeDescription, setNewIncomeDescription] = useState("");
+  const [newIncomeDefaultAmount, setNewIncomeDefaultAmount] = useState(0);
   const [newAssetAccountName, setNewAssetAccountName] = useState("");
   const [assetAccountNames, setAssetAccountNames] = useState([]);
 
@@ -33,6 +34,7 @@ const IncomeNameEdit = () => {
     if (incomeName) {
       setNewIncomeName(incomeName.name);
       setNewIncomeDescription(incomeName.description);
+      setNewIncomeDefaultAmount(incomeName.default_amount);
       setNewAssetAccountName({
         value: incomeName.associated_asset_account_name,
         label: incomeName.asset_account_name,
@@ -54,12 +56,18 @@ const IncomeNameEdit = () => {
     return { value: assetAccountName.id, label: assetAccountName.name };
   });
 
-  const editIncomeName = async (name, description, assetAccountNameId) => {
+  const editIncomeName = async (
+    name,
+    description,
+    defaultAmount,
+    assetAccountNameId
+  ) => {
     const new_payload = {
       id: incomeNameId,
       business: businessId,
       name: name,
       description: description,
+      default_amount: defaultAmount,
       associated_asset_account_name: assetAccountNameId,
     };
     await updateResource(
@@ -78,6 +86,7 @@ const IncomeNameEdit = () => {
     await editIncomeName(
       newIncomeName,
       newIncomeDescription,
+      newIncomeDefaultAmount,
       newAssetAccountName.value
     );
   };
@@ -109,6 +118,12 @@ const IncomeNameEdit = () => {
       fieldLabel: "Description",
       fieldValue: newIncomeDescription,
       setFieldValue: setNewIncomeDescription,
+    },
+    {
+      fieldType: "number",
+      fieldLabel: "Default Amount",
+      fieldValue: newIncomeDefaultAmount,
+      setFieldValue: setNewIncomeDefaultAmount,
     },
     {
       fieldType: "select",

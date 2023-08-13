@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { fetchSpending } from "../APIUtils/fetch_data";
-import { updateResource, deleteResource } from "../APIUtils/create_data";
+import {
+  updateResource,
+  deleteResource,
+  updateSpendingDefaultAmount,
+} from "../APIUtils/create_data";
 import GenericEditData from "../GenericDataComponents/GenericEditData";
 import {
   API_BASE_URL,
@@ -33,21 +37,26 @@ const SpendingEdit = () => {
     }
   }, [spending]);
 
-  const handleEditData = (e) => {
-    e.preventDefault();
+  const updateAsyncSpending = async () => {
     const new_payload = {
       id: spending.id,
       business: businessId,
-      spending_name: spending.spending_name,  // assuming the name of the spending is "spending_name"
+      spending_name: spending.spending_name, // assuming the name of the spending is "spending_name"
       adate: adate,
       amount: amount,
       due_date: newDueDate,
     };
-    updateResource(
+    await updateResource(
       `${API_BASE_URL}${SPENDINGS_UPDATE_ENDPOINT}${spendingId}`,
       new_payload,
       "spending"
     );
+    await updateSpendingDefaultAmount(spending.spending_name, amount);
+  };
+
+  const handleEditData = (e) => {
+    e.preventDefault();
+    updateAsyncSpending();
     navigate(`/business_balances/${businessId}/${adate}`);
   };
 

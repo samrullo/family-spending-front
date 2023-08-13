@@ -82,6 +82,7 @@ const IncomeName = () => {
               id: incomeName.id,
               name: incomeName.name,
               description: incomeName.description,
+              defaultAmount: incomeName.default_amount,
               account_name: incomeName.asset_account_name,
             };
           })}

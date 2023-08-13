@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { fetchBusiness, fetchIncomeNames } from "../APIUtils/fetch_data";
-import { createResource } from "../APIUtils/create_data";
+import {
+  createResource,
+  updateIncomeDefaultAmount,
+} from "../APIUtils/create_data";
 import {
   API_BASE_URL,
   INCOMES_NEW_ENDPOINT, // This should be defined in your APIUtils, it's hypothetical here.
@@ -25,7 +28,7 @@ const IncomeNew = () => {
     fetchData();
   }, []);
 
-  const createIncome = () => {
+  const createAsyncIncome = async () => {
     const new_payload = {
       business: businessId,
       income_name: newIncomeName.value,
@@ -33,11 +36,16 @@ const IncomeNew = () => {
       due_date: newDueDate,
       amount: amount,
     };
-    const new_income = createResource(
+    await createResource(
       `${API_BASE_URL}${INCOMES_NEW_ENDPOINT}`,
       new_payload,
       "income"
     );
+    await updateIncomeDefaultAmount(newIncomeName.value, amount);
+  };
+
+  const createIncome = () => {
+    createAsyncIncome();
     navigate(`/business_balances/${businessId}/${adate}`);
   };
 

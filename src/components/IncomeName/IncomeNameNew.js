@@ -11,6 +11,7 @@ const IncomeNameNew = () => {
   const { businessId } = useParams();
   const [newIncomeName, setNewIncomeName] = useState("");
   const [newIncomeDescription, setNewIncomeDescription] = useState("");
+  const [newIncomeDefaultAmount, setNewIncomeDefaultAmount] = useState(0);
   const [assetAccountNames, setAssetAccountNames] = useState([]);
   const [newAssetAccountName, setNewAssetAccountName] = useState("");
 
@@ -28,11 +29,17 @@ const IncomeNameNew = () => {
     return { value: assetAccountName.id, label: assetAccountName.name };
   });
 
-  const createIncomeName = async (name, description, assetAccountNameId) => {
+  const createIncomeName = async (
+    name,
+    description,
+    defaultAmount,
+    assetAccountNameId
+  ) => {
     const new_payload = {
       business: businessId,
       name: name,
       description: description,
+      default_amount: defaultAmount,
       associated_asset_account_name: assetAccountNameId,
     };
     await createResource(
@@ -51,6 +58,7 @@ const IncomeNameNew = () => {
     await createIncomeName(
       newIncomeName,
       newIncomeDescription,
+      newIncomeDefaultAmount,
       newAssetAccountName.value
     );
   };
@@ -67,6 +75,12 @@ const IncomeNameNew = () => {
       fieldLabel: "Description",
       fieldValue: newIncomeDescription,
       setFieldValue: setNewIncomeDescription,
+    },
+    {
+      fieldType: "number",
+      fieldLabel: "Default Amount",
+      fieldValue: newIncomeDefaultAmount,
+      setFieldValue: setNewIncomeDefaultAmount,
     },
     {
       fieldType: "select",

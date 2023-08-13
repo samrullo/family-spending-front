@@ -77,6 +77,7 @@ const AssetAccountName = () => {
               id: accountName.id,
               name: accountName.name,
               description: accountName.description,
+              defaultAmount:accountName.default_amount
             };
           })}
         />

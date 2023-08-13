@@ -22,6 +22,7 @@ const SpendingNameEdit = () => {
   const { businessId, spendingNameId } = useParams();
   const [newSpendingName, setNewSpendingName] = useState("");
   const [newSpendingDescription, setNewSpendingDescription] = useState("");
+  const [newSpendingDefaultAmount, setNewSpendingDefaultAmount] = useState(0);
   const [newAssetAccountName, setNewAssetAccountName] = useState("");
   const [assetAccountNames, setAssetAccountNames] = useState([]);
 
@@ -40,6 +41,7 @@ const SpendingNameEdit = () => {
     if (spendingName) {
       setNewSpendingName(spendingName.name);
       setNewSpendingDescription(spendingName.description);
+      setNewSpendingDefaultAmount(spendingName.default_amount);
       setNewAssetAccountName({
         value: spendingName.associated_asset_account_name,
         label: spendingName.asset_account_name,
@@ -60,12 +62,18 @@ const SpendingNameEdit = () => {
     return { value: assetAccountName.id, label: assetAccountName.name };
   });
 
-  const editSpendingName = async (name, description, assetAccountNameId) => {
+  const editSpendingName = async (
+    name,
+    description,
+    defaultAmount,
+    assetAccountNameId
+  ) => {
     const new_payload = {
       id: spendingNameId,
       business: businessId,
       name: name,
       description: description,
+      default_amount: defaultAmount,
       associated_asset_account_name: assetAccountNameId,
     };
     await updateResource(
@@ -84,6 +92,7 @@ const SpendingNameEdit = () => {
     await editSpendingName(
       newSpendingName,
       newSpendingDescription,
+      newSpendingDefaultAmount,
       newAssetAccountName.value
     );
   };
@@ -115,6 +124,12 @@ const SpendingNameEdit = () => {
       fieldLabel: "Description",
       fieldValue: newSpendingDescription,
       setFieldValue: setNewSpendingDescription,
+    },
+    {
+      fieldType: "number",
+      fieldLabel: "Default Amount",
+      fieldValue: newSpendingDefaultAmount,
+      setFieldValue: setNewSpendingDefaultAmount,
     },
     {
       fieldType: "select",

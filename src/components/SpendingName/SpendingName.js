@@ -68,7 +68,6 @@ const SpendingName = () => {
         </Link>
 
         <Outlet />
-        
       </div>
       {spendingNames.length === 0 ? (
         <p>No spending names</p>
@@ -82,7 +81,8 @@ const SpendingName = () => {
               id: spendingName.id,
               name: spendingName.name,
               description: spendingName.description,
-              account_name : spendingName.asset_account_name
+              defaultAmount: spendingName.default_amount,
+              account_name: spendingName.asset_account_name,
             };
           })}
         />

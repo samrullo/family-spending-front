@@ -4,23 +4,35 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {
   fetchAssetAccountNames,
+  fetchAssetAccountName,
   fetchIncomeNames,
   fetchSpendingNames,
   fetchBusiness,
 } from "../APIUtils/fetch_data";
 
 import NumberFormField from "./NumberFormField";
-import { createResource } from "../APIUtils/create_data";
+import {
+  createResource,
+  updateResource,
+  updatePatchResource,
+  updateAssetAccountDefaultAmount,
+  updateIncomeDefaultAmount,
+  updateSpendingDefaultAmount
+} from "../APIUtils/create_data";
 import {
   API_BASE_URL,
   ASSET_ACCOUNTS_NEW_ENDPOINT,
+  ASSET_ACCOUNT_NAMES_ENDPOINT,
   INCOMES_NEW_ENDPOINT,
+  INCOME_NAMES_ENDPOINT,
   SPENDINGS_NEW_ENDPOINT,
+  SPENDING_NAMES_ENDPOINT,
 } from "../APIUtils/ApiEndpoints";
 import FormField from "../FormComponents/FormField";
 import AppContext from "../../AppContext";
 
 const BusinessBalanceNew = () => {
+  const waitTimeForAPI = 1000;
   const { isSpinning, setIsSpinning, setFlashMessages } =
     useContext(AppContext);
   const navigate = useNavigate();
@@ -43,6 +55,12 @@ const BusinessBalanceNew = () => {
     fetchData();
   }, []);
 
+  /**
+   * reduces a list of items into an object with keys and values
+   * @param {*} items
+   * @param {*} itemDefaultVal
+   * @returns an object with keys matching item ids and values matching default value
+   */
   const generateFormStates = (items, itemDefaultVal) => {
     return items.reduce(
       (acc, item) => ({ ...acc, [item.id]: itemDefaultVal }),
@@ -88,6 +106,8 @@ const BusinessBalanceNew = () => {
     );
   };
 
+  
+
   const createAssetAccount = async (assetAccountNameId, originalBalance) => {
     await createResource(
       `${API_BASE_URL}${ASSET_ACCOUNTS_NEW_ENDPOINT}`,
@@ -103,7 +123,9 @@ const BusinessBalanceNew = () => {
       "asset account"
     );
 
-    await new Promise((r) => setTimeout(r, 2000));
+    await updateAssetAccountDefaultAmount(assetAccountNameId, originalBalance);
+
+    await new Promise((r) => setTimeout(r, waitTimeForAPI));
   };
 
   const createAssetAccountsInLoop = async () => {
@@ -115,6 +137,7 @@ const BusinessBalanceNew = () => {
     }
   };
 
+  
   const createIncome = async (incomeNameId, incomeAmount) => {
     await createResource(
       `${API_BASE_URL}${INCOMES_NEW_ENDPOINT}`,
@@ -127,7 +150,8 @@ const BusinessBalanceNew = () => {
       },
       "income name"
     );
-    await new Promise((r) => setTimeout(r, 2000));
+    await updateIncomeDefaultAmount(incomeNameId, incomeAmount);
+    await new Promise((r) => setTimeout(r, waitTimeForAPI));
   };
 
   const createIncomesInLoop = async () => {
@@ -138,6 +162,8 @@ const BusinessBalanceNew = () => {
       await createIncome(id, incomeNamesFormState[id]);
     }
   };
+
+  
 
   const createSpending = async (spendingNameId, spendingAmount) => {
     await createResource(
@@ -151,7 +177,8 @@ const BusinessBalanceNew = () => {
       },
       "spending"
     );
-    await new Promise((r) => setTimeout(r, 2000));
+    await updateSpendingDefaultAmount(spendingNameId, spendingAmount);
+    await new Promise((r) => setTimeout(r, waitTimeForAPI));
   };
 
   const createSpendingsInLoop = async () => {
@@ -174,14 +201,14 @@ const BusinessBalanceNew = () => {
         category: "success",
         message: `Successfully generated new busines balance as of ${adate}`,
       },
-    ]);    
+    ]);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(`adate is ${adate}`);
 
-    createNewBusinessBalanceInLoop();    
+    createNewBusinessBalanceInLoop();
 
     navigate(`/business_balances/${businessId}`, {
       replace: true,
@@ -205,6 +232,7 @@ const BusinessBalanceNew = () => {
             <NumberFormField
               key={assetAccountName.id}
               fieldItem={assetAccountName}
+              defaultValue={assetAccountName.default_amount}
               fieldsFormState={assetAccountNamesFormState}
               handleFieldInputChange={handleAssetAccountInputChange}
             />
@@ -216,6 +244,7 @@ const BusinessBalanceNew = () => {
             <NumberFormField
               key={incomeName.id}
               fieldItem={incomeName}
+              defaultValue={incomeName.default_amount}
               fieldsFormState={incomeNamesFormState}
               handleFieldInputChange={handleIncomeInputChange}
             />
@@ -227,6 +256,7 @@ const BusinessBalanceNew = () => {
             <NumberFormField
               key={spendingName.id}
               fieldItem={spendingName}
+              defaultValue={spendingName.default_amount}
               fieldsFormState={spendingNamesFormState}
               handleFieldInputChange={handleSpendingInputChange}
             />

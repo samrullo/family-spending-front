@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { fetchBusiness, fetchSpendingNames } from "../APIUtils/fetch_data"; // Assuming you also have a method for fetching Spending Names
-import { createResource } from "../APIUtils/create_data";
+import {
+  createResource,
+  updateSpendingDefaultAmount,
+} from "../APIUtils/create_data";
 import {
   API_BASE_URL,
   SPENDINGS_NEW_ENDPOINT, // You'll need to define this in your APIUtils if it doesn't exist.
@@ -25,7 +28,7 @@ const SpendingNew = () => {
     fetchData();
   }, []);
 
-  const createSpending = () => {
+  const createAsyncSpending = async () => {
     const new_payload = {
       business: businessId,
       spending_name: newSpendingName.value,
@@ -33,11 +36,16 @@ const SpendingNew = () => {
       due_date: newDueDate,
       amount: amount,
     };
-    const new_spending = createResource(
+    await createResource(
       `${API_BASE_URL}${SPENDINGS_NEW_ENDPOINT}`,
       new_payload,
       "spending"
     );
+    await updateSpendingDefaultAmount(newSpendingName.value, amount);
+  };
+
+  const createSpending = () => {
+    createAsyncSpending();
     navigate(`/business_balances/${businessId}/${adate}`);
   };
 

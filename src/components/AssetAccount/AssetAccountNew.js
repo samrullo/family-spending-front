@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { fetchBusiness, fetchAssetAccountNames } from "../APIUtils/fetch_data";
-import { createResource } from "../APIUtils/create_data";
+import { createResource, updateAssetAccountDefaultAmount } from "../APIUtils/create_data";
 import {
   API_BASE_URL,
   ASSET_ACCOUNTS_NEW_ENDPOINT,
+  ASSET_ACCOUNT_NAMES_ENDPOINT,
 } from "../APIUtils/ApiEndpoints";
 import GenericNewData from "../GenericDataComponents/GenericNewData";
 
@@ -24,7 +25,8 @@ const AssetAccountNew = () => {
     fetchData();
   }, []);
 
-  const createAssetAccount = () => {
+  
+  const createAsyncAssetAccount = async () => {
     const new_payload = {
       business: businessId,
       asset_account_name: newAssetAccountName.value,
@@ -34,11 +36,20 @@ const AssetAccountNew = () => {
       account_liability: 0,
       account_balance: originalBalance,
     };
-    const new_asset_account = createResource(
+    await createResource(
       `${API_BASE_URL}${ASSET_ACCOUNTS_NEW_ENDPOINT}`,
       new_payload,
       "asset account"
     );
+
+    await updateAssetAccountDefaultAmount(
+      newAssetAccountName.value,
+      originalBalance
+    );
+  };
+
+  const createAssetAccount = () => {
+    createAsyncAssetAccount();
     navigate(`/business_balances/${businessId}/${adate}`);
   };
 
