@@ -4,8 +4,8 @@ const NumberFormField = ({
   fieldsFormState,
   handleFieldInputChange,
 }) => {
-  // console.log(`field form state : ${JSON.stringify(fieldsFormState)}`);
-  // console.log(`fieldItem is ${JSON.stringify(fieldItem)}`)
+  console.log(`field form state : ${JSON.stringify(fieldsFormState)}`);
+  console.log(`fieldItem is ${JSON.stringify(fieldItem)}`)
   return (
     <div className="form-group" key={fieldItem.id}>
       <label>{fieldItem.name}</label>

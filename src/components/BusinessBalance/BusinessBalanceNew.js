@@ -17,7 +17,7 @@ import {
   updatePatchResource,
   updateAssetAccountDefaultAmount,
   updateIncomeDefaultAmount,
-  updateSpendingDefaultAmount
+  updateSpendingDefaultAmount,
 } from "../APIUtils/create_data";
 import {
   API_BASE_URL,
@@ -49,36 +49,30 @@ const BusinessBalanceNew = () => {
       setAssetAccountNames(assetAccountNames);
       const incomeNames = await fetchIncomeNames(businessId);
       setIncomeNames(incomeNames);
-      setSpendingNames(await fetchSpendingNames(businessId));
+      const spendingNames = await fetchSpendingNames(businessId);
+      setSpendingNames(spendingNames);
       setBusiness(await fetchBusiness(businessId));
+      setAssetAccountNamesFormState(generateFormStates(assetAccountNames));
+      setIncomeNamesFormState(generateFormStates(incomeNames));
+      setSpendingNamesFormState(generateFormStates(spendingNames));
     };
     fetchData();
   }, []);
 
-  /**
-   * reduces a list of items into an object with keys and values
-   * @param {*} items
-   * @param {*} itemDefaultVal
-   * @returns an object with keys matching item ids and values matching default value
-   */
-  const generateFormStates = (items, itemDefaultVal) => {
+  const generateFormStates = (items) => {
     return items.reduce(
-      (acc, item) => ({ ...acc, [item.id]: itemDefaultVal }),
+      (acc, item) => ({ ...acc, [item.id]: item.default_amount }),
       {}
     );
   };
 
   const [assetAccountNamesFormState, setAssetAccountNamesFormState] = useState(
-    generateFormStates(assetAccountNames, "123")
+    {}
   );
 
-  const [incomeNamesFormState, setIncomeNamesFormState] = useState(
-    generateFormStates(incomeNames, 0)
-  );
+  const [incomeNamesFormState, setIncomeNamesFormState] = useState({});
 
-  const [spendingNamesFormState, setSpendingNamesFormState] = useState(
-    generateFormStates(spendingNames, 0)
-  );
+  const [spendingNamesFormState, setSpendingNamesFormState] = useState({});
 
   const handleFormStateChange = (e, id, formState, setFormState) => {
     setFormState({ ...formState, [id]: e.target.value });
@@ -105,8 +99,6 @@ const BusinessBalanceNew = () => {
       setSpendingNamesFormState
     );
   };
-
-  
 
   const createAssetAccount = async (assetAccountNameId, originalBalance) => {
     await createResource(
@@ -137,7 +129,6 @@ const BusinessBalanceNew = () => {
     }
   };
 
-  
   const createIncome = async (incomeNameId, incomeAmount) => {
     await createResource(
       `${API_BASE_URL}${INCOMES_NEW_ENDPOINT}`,
@@ -162,8 +153,6 @@ const BusinessBalanceNew = () => {
       await createIncome(id, incomeNamesFormState[id]);
     }
   };
-
-  
 
   const createSpending = async (spendingNameId, spendingAmount) => {
     await createResource(
